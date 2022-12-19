@@ -1,0 +1,2 @@
+APPEND [[module]] casper3 INTO &MODULES_LIST&
+CHECK [[module]] casper3 HASH_VALUE # hash value from casper3 final build will be here
