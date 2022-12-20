@@ -3,8 +3,12 @@ output_filename = $output:1 # same as $output
 
 ; Unpacking the file into the correct output directory, droidcat will resolve the correct location for us before the control be passed to the script unit
 
-%unpack% into $input_filename $output_filename
-%disas% dex $output_filename/*.dex
+func decode_package {
+    %unpack% into $param1 $var2
+    %disas% dex $param2/*.dex
+}
+
+call decode_package(input_filename, output_filename)
 
 ; Disassemble ELF shared objects files from the lib subdirectory
 
