@@ -20,6 +20,6 @@ add_compile_definitions(
 add_subdirectory(modules/casper3)
 
 add_executable(droidcat)
-add_subdirectory(src)
+add_subdirectory(source)
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/default/ DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/runtime)
