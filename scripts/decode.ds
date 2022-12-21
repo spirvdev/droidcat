@@ -4,7 +4,7 @@ output_filename = $output:1 # same as $output
 ; Unpacking the file into the correct output directory, droidcat will resolve the correct location for us before the control be passed to the script unit
 
 func decode_package {
-    %unpack% into $param1 $var2
+    %unpack% into $param1 $param2
     %disas% dex $param2/*.dex
 }
 
