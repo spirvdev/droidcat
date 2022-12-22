@@ -17,9 +17,11 @@ add_compile_definitions(
     "$<$<CONFIG:DEBUG>:DROIDCAT_IS_UNDER_DEBUG=1>"
 )
 
-add_subdirectory(modules/casper3)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_executable(droidcat)
 add_subdirectory(source)
+
+add_subdirectory(modules/casper3)
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/default/ DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/runtime)
