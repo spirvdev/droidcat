@@ -1,4 +1,4 @@
-Welcome to Droidtool SRE's documentation!
+Welcome to Droidcat SRE's documentation!
 =========================================
 
 .. toctree::

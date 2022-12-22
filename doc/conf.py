@@ -1,4 +1,4 @@
-project = 'Droidtool SRE'
+project = 'Droidcat SRE'
 copyright = '2022, Gabriel Correia'
 author = 'Gabriel Correia'
 version = '0.0.1'
