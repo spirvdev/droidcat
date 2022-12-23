@@ -4,6 +4,8 @@
 
 #include <string.h>
 
+#include <whiskey/release.h>
+
 static const char* const gs_STATE_0000 = "Doing nothing (Invalid)";
 static const char* const gs_STATE_0001 = "Initializing everything (Turning ready in some milliseconds)";
 static const char* const gs_STATE_0010 = "Loading all resources";
@@ -19,6 +21,7 @@ i32 droidcat_init(droidcat_ctx_t* droidcat_ctx)
     droidcat_ctx->running_status    = (droidcat_status_t*)  dccalloc(1, sizeof(droidcat_ctx_t));
     droidcat_ctx->user_cmd_options  = (user_options_t*)     dccalloc(1, sizeof(user_options_t));
     droidcat_ctx->backend_manager   = (backend_ctx_t*)      dccalloc(1, sizeof(backend_ctx_t ));
+    droidcat_ctx->whiskey_server    = (whiskey_ctx_t*)      dccalloc(1, sizeof(whiskey_ctx_t));
 
     droidcat_status_t* status_ctx = droidcat_ctx->running_status;
 
@@ -36,6 +39,7 @@ i32 droidcat_deinit(droidcat_ctx_t* droidcat_ctx)
     dcfree(droidcat_ctx->running_status);
     dcfree(droidcat_ctx->user_cmd_options);
     dcfree(droidcat_ctx->backend_manager);
+    dcfree(droidcat_ctx->whiskey_server);
 
     return 0;
 }
@@ -104,11 +108,12 @@ i32 tooling_version_to_str(char over[], u64 sover, const i32 ver)
     return seat;
 }
 
-void welcome_display(const droidcat_ctx_t* droidcat_ctx)
+void welcome_display(droidcat_ctx_t* droidcat_ctx)
 {
     char version_buffer[0x10];
-    tooling_version_to_str(version_buffer, 0x10, gs_droidcat_version);
+    tooling_version_to_str(version_buffer, sizeof(version_buffer), gs_droidcat_version);
     
+    whiskey_log_info(droidcat_ctx, "Welcome to droidcat version (%s) compiled with ...\n", version_buffer);
 }
 
 void goodbye_display(const droidcat_ctx_t* droidcat_ctx)
