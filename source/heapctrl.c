@@ -6,10 +6,14 @@
 #include <unistd.h>
 #include <sys/mman.h>
 
+#include <whiskey/release.h>
+
 static u64 gs_page_size = 0;
 
 void* dccalloc(u64 count, u64 esize)
-{        
+{
+    whiskey_log_assert(NULL, count == 0 || esize == 0, "Count and Esize mustn't be zero");
+
     void* nptr = calloc(count, esize);
 
     if (nptr == NULL)
@@ -22,9 +26,12 @@ void* dccalloc(u64 count, u64 esize)
 
 void* dcmalloc(u64 nsize)
 {
+    whiskey_log_assert(NULL, nsize == 0, "Nsize mustn't be zero");
+
     if (gs_page_size == 0)
     {
         gs_page_size = sysconf(_SC_PAGE_SIZE);
+        whiskey_log_info(NULL, "System memory page size has fetched: %d\n", gs_page_size);
     }
 
     if (nsize > gs_page_size)
@@ -37,16 +44,29 @@ void* dcmalloc(u64 nsize)
 
 char* dcstrdup(const char *dups)
 {
-  const u64 slen = strlen(dups);
-  char* region = (char*)dcmalloc(slen+1);
+    const u64 slen = strlen(dups);
+    char* region = (char*)dcmalloc(slen+1);
 
-  if (region == NULL) return NULL;
+    if (region == NULL) return NULL;
+    
+    strncpy(region, dups, slen);
+    
+    slen[region] = '\0';
+    return region;
+}
 
-  strncpy(region, dups, slen);
+char* dcstrndup(const char *dups, u64 sdups)
+{
+    if (*dups == '\0')          return NULL;
+    if (strlen(dups) <= sdups)  return NULL;
+
+    char* region = (char*)dcmalloc(sdups + 1);
+    if (region == NULL) return NULL;
+
+    strncpy(region, dups, sdups);
   
-  slen[region] = '\0';
-
-  return region;
+    sdups[region] = '\0';
+    return region;
 }
 
 bool dcfree(void* fptr)
