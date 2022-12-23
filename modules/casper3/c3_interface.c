@@ -1,4 +1,4 @@
-#include <mod_extensions/contract.h>
+#include <module_interface/contract.h>
 
 static module_contract_t    g_casper3_contract;
 static backend_comm_t*      g_backend_node = 0;
@@ -18,9 +18,9 @@ void casper3_test(bool is_accepted)
 }
 
 static module_contract_t g_casper3_contract = {
-    .module_name = "Casper3",
-    .module_version = "0.0.1a01",
-    .module_init = casper3_init,
-    .module_deinit = casper3_deinit,
-    .module_supervisor_decision = casper3_test
+    .module_name                = "Casper3",
+    .module_version             = "0.0.1a01",
+    .module_init                = casper3_init,
+    .module_deinit              = casper3_deinit,
+    .module_confirmation        = casper3_test
 };
