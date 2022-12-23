@@ -21,10 +21,13 @@ typedef struct user_options {
 typedef struct backend_ctx {
 } backend_ctx_t;
 
+typedef struct whiskey_ctx whiskey_ctx_t;
+
 typedef struct droidcat_ctx {
     droidcat_status_t*  running_status;
 
     user_options_t*     user_cmd_options;
     backend_ctx_t*      backend_manager;
+    whiskey_ctx_t*      whiskey_server;
 
 } droidcat_ctx_t;
