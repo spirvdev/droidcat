@@ -42,7 +42,7 @@ i32 droidcat_deinit(droidcat_ctx_t* droidcat_ctx)
 
 static const i32 gs_droidcat_version = 0x0011000; // 0.0.1
 
-bool newday_hex_to_str(char byte_arr[2], u8 bvalue, bool half)
+bool tooling_hex_to_str(char byte_arr[2], u8 bvalue, bool half)
 {
     if (byte_arr == NULL) return false;
     if (bvalue == 0x00)
@@ -64,7 +64,7 @@ bool newday_hex_to_str(char byte_arr[2], u8 bvalue, bool half)
     return true;
 }
 
-i32 newday_version_to_str(char over[], u64 sover, const i32 ver)
+i32 tooling_version_to_str(char over[], u64 sover, const i32 ver)
 {
     if (ver == 0)           return strncpy(over, "0.0.0", sover) != NULL ? 0 : -1;
     if (ver & 0xf0000000)   return -1;
@@ -77,7 +77,7 @@ i32 newday_version_to_str(char over[], u64 sover, const i32 ver)
 
     for (i32 ptr_mask = 8; ptr_mask >= 0; ptr_mask -= 4)
     {
-        newday_hex_to_str(inter, mask_value >> ptr_mask, true);
+        tooling_hex_to_str(inter, mask_value >> ptr_mask, true);
         *(u16*)(seat++ + over) = *(u16*)inter;
         if (ptr_mask != 0)
             *(seat++ + over) = '.';
@@ -91,12 +91,12 @@ i32 newday_version_to_str(char over[], u64 sover, const i32 ver)
     case 0x1000: *(seat + over) = 'a'; seat++; break;
     case 0x2000: *(seat + over) = 'b'; seat++; break;
     case 0x3000: *(seat + over) = 'R'; seat++; break;
-    default:     *(seat + over) = ']'; seat++; break;
+    default:     *(seat + over) = '?'; seat++; break;
     }
 
     for (i32 ptr_mask = 8; ptr_mask >= 0; ptr_mask -= 4)
     {
-        newday_hex_to_str(inter, mask_value >> ptr_mask, true);
+        tooling_hex_to_str(inter, mask_value >> ptr_mask, true);
         *(u16*)(seat++ + over) = *(u16*)inter;
     }
 
@@ -107,7 +107,7 @@ i32 newday_version_to_str(char over[], u64 sover, const i32 ver)
 void welcome_display(const droidcat_ctx_t* droidcat_ctx)
 {
     char version_buffer[0x10];
-    newday_version_to_str(version_buffer, 0x10, gs_droidcat_version);
+    tooling_version_to_str(version_buffer, 0x10, gs_droidcat_version);
     
 }
 
