@@ -7,7 +7,7 @@ static const char* const gs_STATE_0001 = "Initializing everything (Turning ready
 static const char* const gs_STATE_0010 = "Loading all resources";
 
 static const char* gs_STATES_XX[] = {
-    gs_STATE_0000, gs_STATE_0010
+    gs_STATE_0000, gs_STATE_0001, gs_STATE_0010
 };
 
 i32 droidcat_init(droidcat_ctx_t* droidcat_ctx)
