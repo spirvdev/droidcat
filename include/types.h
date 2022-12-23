@@ -1,11 +1,15 @@
 #pragma once
 
 #include <stdint.h>
+#include <stdbool.h>
+#include <stddef.h>
 
 typedef int32_t i32;
+typedef int32_t u64;
 
 typedef struct droidcat_status {
     i32 state_value;
+    const char* state_message;
 } droidcat_status_t;
 
 typedef struct user_options {
