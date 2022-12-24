@@ -3,6 +3,7 @@
 #include <heapctrl.h>
 
 #include <string.h>
+#include <math.h>
 
 #include <whiskey/release.h>
 
@@ -16,7 +17,7 @@ static const char* gs_STATES_XX[] = {
 
 i32 droidcat_init(droidcat_ctx_t* droidcat_ctx)
 {
-    if (droidcat_ctx == NULL || droidcat_ctx->running_status) return -1;
+    if (droidcat_ctx == NULL || droidcat_ctx->running_status != NULL) return -1;
 
     droidcat_ctx->running_status    = (droidcat_status_t*)  dccalloc(1, sizeof(droidcat_ctx_t));
     droidcat_ctx->user_cmd_options  = (user_options_t*)     dccalloc(1, sizeof(user_options_t));
@@ -44,17 +45,17 @@ i32 droidcat_deinit(droidcat_ctx_t* droidcat_ctx)
     return 0;
 }
 
-static const i32 gs_droidcat_version = 0x0011000; // 0.0.1
+static const i32 gs_droidcat_version = 0x0011000; // 0.0.1a000
 
 bool tooling_hex_to_str(char byte_arr[2], u8 bvalue, bool half)
 {
     if (byte_arr == NULL) return false;
     if (bvalue == 0x00)
     {
-        if (half == false)
-            *(u16*)byte_arr = 0x3030;
+        if (half == true)
+            *(u8*)byte_arr = 0x30;
         else
-            *(u16*)byte_arr = 0x30;
+            *(u16*)byte_arr = 0x3030;
         return true;
     }
 
@@ -65,6 +66,41 @@ bool tooling_hex_to_str(char byte_arr[2], u8 bvalue, bool half)
 
     *byte_arr = hex_values[bvalue & 0xf0];
 
+    return true;
+}
+
+bool tooling_dec_to_str(u8 byte_arr[], u8 asize, i32 bvalue)
+{
+    if (byte_arr == NULL) return false;
+    if (bvalue == 0)
+    {
+        *(u16*)byte_arr = 0x30;
+        return true;
+    }
+    // We can know what much times the do-while loop will run with this trick!
+    i32 final = (i32)(ceil(log10(bvalue) + 1));
+    if ((final * sizeof(char)) >= asize)
+        return false;
+    
+    // Putting a final invalid byte
+    u8* arr_ptr = &byte_arr[asize - 1];
+
+    if (bvalue > 0) goto end;
+    
+    final[arr_ptr] = '-';
+    
+    if (asize + 1 > final)
+        (final + 1)[byte_arr] = '\0'; 
+    goto loop;
+
+    end:
+    *arr_ptr-- = '\0';
+    loop:
+
+    do {
+        *arr_ptr-- = '0' + (bvalue % 10);
+        bvalue /= 10;
+    } while (bvalue != 0);
     return true;
 }
 
@@ -79,10 +115,17 @@ i32 tooling_version_to_str(char over[], u64 sover, const i32 ver)
 
     u16 mask_value = 0x0fff & ver>>16;
 
+    #define DEC_CONV(inc_dex, output, intbuf, size, value)\
+    do\
+    {\
+        if (tooling_dec_to_str(intbuf, size, value) == false)\
+            return false;\
+        *(u16*)(inc_dex++ + output) = *(u16*)intbuf;\
+    } while(0)
+
     for (i32 ptr_mask = 8; ptr_mask >= 0; ptr_mask -= 4)
     {
-        tooling_hex_to_str(inter, mask_value >> ptr_mask, true);
-        *(u16*)(seat++ + over) = *(u16*)inter;
+        DEC_CONV(seat, over, (u8*)inter, sizeof(inter), mask_value >> ptr_mask & 0xf);
         if (ptr_mask != 0)
             *(seat++ + over) = '.';
     }
@@ -90,19 +133,21 @@ i32 tooling_version_to_str(char over[], u64 sover, const i32 ver)
     *(seat++ + over) = '-';
     mask_value = 0xffff & ver;
 
-    switch (mask_value & 0xf000)
+    //static const char mask_version[] = {'?', 'a', 'b', 'R', '?'};
+    //*(seat++ + over) = mask_version[mask_value>>12 & 0xf];
+
+    switch (mask_value>>12 & 0xa)
     {
-    case 0x1000: *(seat + over) = 'a'; seat++; break;
-    case 0x2000: *(seat + over) = 'b'; seat++; break;
-    case 0x3000: *(seat + over) = 'R'; seat++; break;
-    default:     *(seat + over) = '?'; seat++; break;
+    case 0x1: *(seat + over) = 'a'; seat++; break;
+    case 0x2: *(seat + over) = 'b'; seat++; break;
+    case 0x3: *(seat + over) = 'R'; seat++; break;
+    default:  *(seat + over) = '?'; seat++; break;
     }
 
     for (i32 ptr_mask = 8; ptr_mask >= 0; ptr_mask -= 4)
-    {
-        tooling_hex_to_str(inter, mask_value >> ptr_mask, true);
-        *(u16*)(seat++ + over) = *(u16*)inter;
-    }
+        DEC_CONV(seat, over, (u8*)inter, sizeof(inter), mask_value >> ptr_mask & 0xf);
+    
+    #undef DEC_CONV
 
     sover[over] = '\0';
     return seat;
@@ -111,31 +156,44 @@ i32 tooling_version_to_str(char over[], u64 sover, const i32 ver)
 void welcome_display(droidcat_ctx_t* droidcat_ctx)
 {
     char version_buffer[0x10];
-    tooling_version_to_str(version_buffer, sizeof(version_buffer), gs_droidcat_version);
-    
+    const bool verok = tooling_version_to_str(version_buffer, sizeof(version_buffer), gs_droidcat_version);
+
+    whiskey_log_assert(droidcat_ctx, verok == false, "Invalid version string!");
+
     whiskey_log_info(droidcat_ctx, "Welcome to droidcat version (%s) compiled with ...\n", version_buffer);
 }
 
-void goodbye_display(const droidcat_ctx_t* droidcat_ctx)
-{
+void goodbye_display(const droidcat_ctx_t* droidcat_ctx) {}
 
-}
+static const char* const gs_MAIN_INV_CTX_0001 = "Can't allocate the droidcat main context, quitting now!";
+static const char* const gs_MAIN_INV_CTX_0002 = "Can't initialize the main context, we can't continue from here!";
 
 i32 main()
 {
-    droidcat_ctx_t* droidcat_proc = (droidcat_ctx_t*)dccalloc(1, sizeof(droidcat_ctx_t));
+    droidcat_ctx_t* droidcat_ctx = (droidcat_ctx_t*)dccalloc(1, sizeof(droidcat_ctx_t));
     
-    if (droidcat_proc == NULL) {}
+    if (droidcat_ctx == NULL)
+    {
+        whiskey_log_fatal(NULL, "%s", gs_MAIN_INV_CTX_0001);
+        return -1;
+    }
 
-    droidcat_init(droidcat_proc);
+    const i32 initret = droidcat_init(droidcat_ctx);
 
-    welcome_display(droidcat_proc);
+    if (initret != 0)
+    {
+        whiskey_log_fatal(NULL, "%s", gs_MAIN_INV_CTX_0002);
+        dcfree(droidcat_ctx);
 
-    goodbye_display(droidcat_proc);
+        return -1;
+    }
 
-    droidcat_deinit(droidcat_proc);
+    welcome_display(droidcat_ctx);
 
-    dcfree(droidcat_proc);
+    goodbye_display(droidcat_ctx);
+
+    droidcat_deinit(droidcat_ctx);
+    dcfree(droidcat_ctx);
 
     return 0;
 }

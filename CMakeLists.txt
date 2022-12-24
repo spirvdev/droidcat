@@ -20,6 +20,8 @@ add_compile_definitions(
 add_executable(droidcat)
 add_subdirectory(source)
 
+target_link_libraries(droidcat PRIVATE m)
+
 add_subdirectory(modules/casper3)
 
 target_include_directories(droidcat PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
