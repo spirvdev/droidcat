@@ -5,6 +5,7 @@
 #include <string.h>
 #include <math.h>
 
+#include <core_backend.h>
 #include <whiskey/release.h>
 
 static const char* const gs_STATE_0000 = "Doing nothing (Invalid)";
@@ -106,7 +107,7 @@ bool tooling_dec_to_str(u8 byte_arr[], u8 asize, i32 bvalue)
 
 i32 tooling_version_to_str(char over[], u64 sover, const i32 ver)
 {
-    if (ver == 0)           return strncpy(over, "0.0.0", sover) != NULL ? 0 : -1;
+    if (ver == 0)           return strncpy(over, "0.0.0-?000", sover) != NULL ? 0 : -1;
     if (ver & 0xf0000000)   return -1;
     if (sover < 12)         return -1;
 
