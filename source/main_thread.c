@@ -16,6 +16,53 @@ static const char* gs_STATES_XX[] = {
     gs_STATE_0000, gs_STATE_0001, gs_STATE_0010
 };
 
+i32 user_parser_init(droidcat_ctx_t* droidcat_ctx)
+{
+    user_options_t* user_commands = droidcat_ctx->user_cmd_options;
+    if (user_commands == NULL) return -1;
+
+    user_commands->display_banner = true;
+    return 0;
+}
+
+i32 user_parser_deinit(const droidcat_ctx_t* droidcat_ctx) {return 0;}
+
+i32 session_init(droidcat_ctx_t* droidcat_ctx)
+{
+    i32 sess = 0;
+    droidcat_status_t* status_session = droidcat_ctx->running_status;
+    
+    status_session->state_message = gs_STATES_XX[++status_session->state_value];
+    
+    sess = user_parser_init(droidcat_ctx);
+    if (sess != 0)
+    {
+        whiskey_log_error(droidcat_ctx, "User parser at %p has failed to initializer\n", droidcat_ctx->user_cmd_options);
+        return sess;
+    }
+
+    sess = backend_init(droidcat_ctx);
+    if (sess != 0)
+    {
+        whiskey_log_error(droidcat_ctx, "Backend at %p has failed to initializer\n", droidcat_ctx->backend_manager);
+        return sess;
+    }
+
+    whiskey_log_success(droidcat_ctx, "Droidcat session has successfully initialized!\n");
+
+    return 0;
+}
+
+i32 session_deinit(droidcat_ctx_t* droidcat_ctx)
+{
+    if (droidcat_ctx == NULL) return -1;
+    
+    backend_deinit(droidcat_ctx);
+    user_parser_deinit(droidcat_ctx);
+
+    return 0;
+}
+
 i32 droidcat_init(droidcat_ctx_t* droidcat_ctx)
 {
     if (droidcat_ctx == NULL || droidcat_ctx->running_status != NULL) return -1;
@@ -189,11 +236,15 @@ i32 main()
         return -1;
     }
 
+    session_init(droidcat_ctx);
+
     welcome_display(droidcat_ctx);
 
     goodbye_display(droidcat_ctx);
 
+    session_deinit(droidcat_ctx);
     droidcat_deinit(droidcat_ctx);
+
     dcfree(droidcat_ctx);
 
     return 0;
