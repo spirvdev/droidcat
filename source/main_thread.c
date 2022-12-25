@@ -203,6 +203,10 @@ i32 tooling_version_to_str(char over[], u64 sover, const i32 ver)
 
 void welcome_display(droidcat_ctx_t* droidcat_ctx)
 {
+    const user_options_t* user_commands = droidcat_ctx->user_cmd_options;
+    
+    if (user_commands->display_banner == false) return;
+    
     char version_buffer[0x10];
     const bool verok = tooling_version_to_str(version_buffer, sizeof(version_buffer), gs_droidcat_version);
 
