@@ -222,7 +222,7 @@ i32 main()
     
     if (droidcat_ctx == NULL)
     {
-        whiskey_log_fatal(NULL, "%s", gs_MAIN_INV_CTX_0001);
+        whiskey_log_fatal(NULL, "%s\n", gs_MAIN_INV_CTX_0001);
         return -1;
     }
 
@@ -230,7 +230,7 @@ i32 main()
 
     if (initret != 0)
     {
-        whiskey_log_fatal(NULL, "%s", gs_MAIN_INV_CTX_0002);
+        whiskey_log_fatal(NULL, "%s\n", gs_MAIN_INV_CTX_0002);
         dcfree(droidcat_ctx);
 
         return -1;
