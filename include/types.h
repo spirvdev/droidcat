@@ -16,6 +16,7 @@ typedef struct droidcat_status {
 } droidcat_status_t;
 
 typedef struct user_options {
+    bool display_banner;
 } user_options_t;
 
 typedef struct backend_ctx {
