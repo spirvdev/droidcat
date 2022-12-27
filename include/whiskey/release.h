@@ -17,11 +17,14 @@ i32 whiskey_log(const whiskey_location_t* event_payload, const whiskey_event_e e
         whiskey_log((const whiskey_location_t*)&stack_local, level, droidcat_ctx, format, ##__VA_ARGS__);\
     } while (0)
 
+#define whiskey_log_success(droidcat_ctx, format, ...)\
+    whiskey_log_LEVEL(WHISKEY_EVENT_SUCCESS, droidcat_ctx, format, ##__VA_ARGS__)
+
 #define whiskey_log_info(droidcat_ctx, format, ...)\
     whiskey_log_LEVEL(WHISKEY_EVENT_INFO, droidcat_ctx, format, ##__VA_ARGS__)
 
-#define whiskey_log_success(droidcat_ctx, format, ...)\
-    whiskey_log_LEVEL(WHISKEY_EVENT_SUCCESS, droidcat_ctx, format, ##__VA_ARGS__)
+#define whiskey_log_warning(droidcat_ctx, format, ...)\
+    whiskey_log_LEVEL(WHISKEY_EVENT_WARNING, droidcat_ctx, format, ##__VA_ARGS__)
 
 #define whiskey_log_error(droidcat_ctx, format, ...)\
     whiskey_log_LEVEL(WHISKEY_EVENT_ERROR, droidcat_ctx, format, ##__VA_ARGS__)

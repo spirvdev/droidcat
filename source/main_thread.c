@@ -4,6 +4,8 @@
 
 #include <string.h>
 #include <math.h>
+#include <getopt.h>
+#include <stdlib.h>
 
 #include <core_backend.h>
 #include <whiskey/release.h>
@@ -21,11 +23,63 @@ i32 user_parser_init(droidcat_ctx_t* droidcat_ctx)
     user_options_t* user_commands = droidcat_ctx->user_cmd_options;
     if (user_commands == NULL) return -1;
 
+    // Applying default options configuration!
     user_commands->display_banner = true;
     return 0;
 }
 
 i32 user_parser_deinit(const droidcat_ctx_t* droidcat_ctx) {return 0;}
+
+#define OPT_INDEX_DISPLAY_BANNER    'B'
+#define OPT_INDEX_VERBOSE_LEVEL     'V'
+
+static const struct option long_options[] = {
+    {"display-banner", required_argument,   NULL, OPT_INDEX_DISPLAY_BANNER  },
+    {"verbose-level",  required_argument,   NULL, OPT_INDEX_VERBOSE_LEVEL   },
+    {}
+};
+
+i32 user_parser_setup(droidcat_ctx_t* droidcat_ctx, i32 argc, char** argv)
+{
+    user_options_t* user_commands = droidcat_ctx->user_cmd_options;
+    
+    static const char* const short_getopt = "B:V:";
+    i32 c;
+    i32 long_index;
+
+    while ((c = getopt_long(argc, argv, short_getopt, long_options, &long_index)) != -1)
+    {
+        switch (c) 
+        {
+        case OPT_INDEX_DISPLAY_BANNER: 
+            user_commands->display_banner = (i32)strtoull(optarg, NULL, 10) != 0 ? true : false;
+            break;
+        case OPT_INDEX_VERBOSE_LEVEL:
+            user_commands->verbosity = (i32)strtoull(optarg, NULL, 0);
+            break;
+        }
+    }
+
+    return 0;
+}
+
+i32 user_parser_sanitizer(droidcat_ctx_t* droidcat_ctx)
+{
+    user_options_t* user_commands = droidcat_ctx->user_cmd_options;
+
+    if (user_commands->verbosity < 2)
+    {
+        if (user_commands->display_banner != false)
+        {
+            whiskey_log_warning(droidcat_ctx, "Program banner can't be displayed " 
+                "because verbosity level is under level 2\n");
+            user_commands->display_banner = false;
+        }
+    }
+
+    return 0;
+}
+
 
 i32 session_init(droidcat_ctx_t* droidcat_ctx)
 {
@@ -220,7 +274,7 @@ void goodbye_display(const droidcat_ctx_t* droidcat_ctx) {}
 static const char* const gs_MAIN_INV_CTX_0001 = "Can't allocate the droidcat main context, quitting now!";
 static const char* const gs_MAIN_INV_CTX_0002 = "Can't initialize the main context, we can't continue from here!";
 
-i32 main()
+i32 main(i32 argc, char** argv)
 {
     droidcat_ctx_t* droidcat_ctx = (droidcat_ctx_t*)dccalloc(1, sizeof(droidcat_ctx_t));
     
@@ -241,6 +295,9 @@ i32 main()
     }
 
     session_init(droidcat_ctx);
+
+    user_parser_setup(droidcat_ctx, argc, argv);
+    user_parser_sanitizer(droidcat_ctx);
 
     welcome_display(droidcat_ctx);
 
