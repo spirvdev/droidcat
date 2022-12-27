@@ -221,7 +221,7 @@ i32 tooling_version_to_str(char over[], u64 sover, const i32 ver)
     do\
     {\
         if (tooling_dec_to_str(intbuf, size, value) == false)\
-            return false;\
+            return -1;\
         *(u16*)(inc_dex++ + output) = *(u16*)intbuf;\
     } while(0)
 
