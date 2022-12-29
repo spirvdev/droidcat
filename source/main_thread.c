@@ -28,7 +28,7 @@ i32 user_parser_init(droidcat_ctx_t* droidcat_ctx)
     return 0;
 }
 
-i32 user_parser_deinit(const droidcat_ctx_t* droidcat_ctx) {return 0;}
+i32 user_parser_deinit(MAYBE_UNUSED const droidcat_ctx_t* droidcat_ctx) {return 0;}
 
 #define OPT_INDEX_DISPLAY_BANNER    'B'
 #define OPT_INDEX_VERBOSE_LEVEL     'V'
@@ -149,7 +149,7 @@ i32 droidcat_deinit(droidcat_ctx_t* droidcat_ctx)
 
 static const i32 gs_droidcat_version = 0x0011000; // 0.0.1a000
 
-bool tooling_hex_to_str(char byte_arr[2], u8 bvalue, bool half)
+MAYBE_UNUSED bool tooling_hex_to_str(char byte_arr[2], u8 bvalue, bool half)
 {
     if (byte_arr == NULL) return false;
     if (bvalue == 0x00)
@@ -269,7 +269,7 @@ void welcome_display(droidcat_ctx_t* droidcat_ctx)
     whiskey_log_info(droidcat_ctx, "Welcome to droidcat version (%s) compiled with ...\n", version_buffer);
 }
 
-void goodbye_display(const droidcat_ctx_t* droidcat_ctx) {}
+void goodbye_display(MAYBE_UNUSED const droidcat_ctx_t* droidcat_ctx) {}
 
 static const char* const gs_MAIN_INV_CTX_0001 = "Can't allocate the droidcat main context, quitting now!";
 static const char* const gs_MAIN_INV_CTX_0002 = "Can't initialize the main context, we can't continue from here!";

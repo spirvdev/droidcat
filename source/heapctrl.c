@@ -42,23 +42,23 @@ void* dcmalloc(u64 nsize)
     return malloc(nsize);
 }
 
-char* dcstrdup(const char *dups)
+MAYBE_UNUSED char* dcstrdup(const char* dups)
 {
     const u64 slen = strlen(dups);
     char* region = (char*)dcmalloc(slen+1);
 
     if (region == NULL) return NULL;
-    
+
     strncpy(region, dups, slen);
-    
+
     slen[region] = '\0';
     return region;
 }
 
-char* dcstrndup(const char *dups, u64 sdups)
+MAYBE_UNUSED char* dcstrndup(const char *dups, u64 sdups)
 {
-    if (*dups == '\0')          return NULL;
-    if (strlen(dups) <= sdups)  return NULL;
+    if (*dups == '\0')		return NULL;
+    if (strlen(dups) <= sdups)	return NULL;
 
     char* region = (char*)dcmalloc(sdups + 1);
     if (region == NULL) return NULL;
@@ -69,7 +69,7 @@ char* dcstrndup(const char *dups, u64 sdups)
     return region;
 }
 
-bool dcfree(void* fptr)
+MAYBE_UNUSED bool dcfree(void* fptr)
 {
     if (fptr == NULL) return false;
 
