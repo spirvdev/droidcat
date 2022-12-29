@@ -179,7 +179,7 @@ bool tooling_dec_to_str(u8 byte_arr[], u8 asize, i32 bvalue)
         *(u16*)byte_arr = 0x30;
         return true;
     }
-    // We can know what much times the do-while loop will run with this trick!
+    // We can know what many times the do-while loop will run with this trick!
     i32 final = (i32)(ceil(log10(bvalue) + 1));
     if ((final * sizeof(char)) >= asize)
         return false;

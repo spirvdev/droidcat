@@ -10,6 +10,8 @@ typedef int32_t     i32;
 typedef uint32_t    u32;
 typedef int32_t     u64;
 
+#define MAYBE_UNUSED __attribute__((unused))
+
 typedef struct droidcat_status {
     i32 state_value;
     const char* state_message;

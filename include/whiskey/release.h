@@ -34,5 +34,5 @@ i32 whiskey_log(const whiskey_location_t* event_payload, const whiskey_event_e e
 
 #define whiskey_log_assert(droidcat_ctx, condition, message)\
     if (((condition)) == true)\
-        whiskey_log_LEVEL(WHISKEY_EVENT_ASSERT, droidcat_ctx, message" Condition: (##condition)")
+        whiskey_log_LEVEL(WHISKEY_EVENT_ASSERT, droidcat_ctx, message" Condition: "#condition)
 

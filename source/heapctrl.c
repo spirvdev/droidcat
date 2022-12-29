@@ -11,7 +11,7 @@ static u64 gs_page_size = 0;
 
 void* dccalloc(u64 count, u64 esize)
 {
-    whiskey_log_assert(NULL, count == 0 || esize == 0, "Count and Esize mustn't be zero");
+    whiskey_log_assert(NULL, count == 0 || esize == 0, "count and esize mustn't be zero");
 
     void* nptr = calloc(count, esize);
 
@@ -25,7 +25,7 @@ void* dccalloc(u64 count, u64 esize)
 
 void* dcmalloc(u64 nsize)
 {
-    whiskey_log_assert(NULL, nsize == 0, "Nsize mustn't be zero");
+    whiskey_log_assert(NULL, nsize == 0, "nsize mustn't be zero");
 
     if (gs_page_size == 0)
     {

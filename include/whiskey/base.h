@@ -15,7 +15,7 @@ typedef enum whiskey_event {
 
 typedef enum whiskey_trap {
     WHISKEY_TRAP_INITIALIZING_SYSTEM,
-    WHISKEY_TRAP_ASSERTATION_AS_OCURRED
+    WHISKEY_TRAP_ASSERTION_WAS_OCCURRED
 } whiskey_trap_e;
 
 typedef i32 (*event_callback_t)(whiskey_trap_e wh_id, droidcat_ctx_t* droidcat_ctx, const void* msg_buf, const u64 len);
