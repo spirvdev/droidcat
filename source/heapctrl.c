@@ -4,7 +4,6 @@
 #include <string.h>
 
 #include <unistd.h>
-#include <sys/mman.h>
 
 #include <whiskey/release.h>
 
@@ -30,7 +29,7 @@ void* dcmalloc(u64 nsize)
 
     if (gs_page_size == 0)
     {
-        gs_page_size = sysconf(_SC_PAGE_SIZE);
+        gs_page_size = (i32)sysconf(_SC_PAGE_SIZE);
         whiskey_log_info(NULL, "System memory page size has fetched: %d\n", gs_page_size);
     }
 

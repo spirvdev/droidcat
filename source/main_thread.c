@@ -83,7 +83,7 @@ i32 user_parser_sanitizer(droidcat_ctx_t* droidcat_ctx)
 
 i32 session_init(droidcat_ctx_t* droidcat_ctx)
 {
-    i32 sess = 0;
+    i32 sess;
     droidcat_status_t* status_session = droidcat_ctx->running_status;
     
     status_session->state_message = gs_STATES_XX[++status_session->state_value];
@@ -251,7 +251,7 @@ i32 tooling_version_to_str(char over[], u64 sover, const i32 ver)
     
     #undef DEC_CONV
 
-    sover[over] = '\0';
+    (sover - 1)[over] = '\0';
     return seat;
 }
 
